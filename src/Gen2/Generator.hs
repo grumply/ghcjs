@@ -1954,7 +1954,7 @@ genForeignCall top
              )
 genForeignCall top (CCall (CCallSpec ccTarget cconv safety)) t tgt args = do
   emitForeign (top ^. ctxSrcSpan) (T.pack lbl) safety cconv (map showArgType args) (showType t)
-  (,exprResult) <$> parseFFIPattern catchExcep async isJsCc lbl t tgt' args
+  (,exprResult) <$> parseFFIPattern catchExcep async cconv lbl t tgt' args
   where
     isJsCc = cconv == JavaScriptCallConv
 

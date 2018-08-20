@@ -251,7 +251,7 @@ packStrings settings dflags cstate code =
       rewriteBlock (stat, ci, si)
         = (rewriteStat stat, ci, mapMaybe rewriteStatic si)
 
-    in (cstate0, initStatic : map rewriteBlock code)
+    in (cstate0, if gsStringCompact settings then (initStatic : map rewriteBlock code) else code)
 
 renameInternals :: HasDebugCallStack
                 => GhcjsSettings
@@ -569,6 +569,10 @@ encodeStatic0 cs (StaticInfo _to sv _)
       [6] -- ++ encodeDouble d
 --    | StaticString t <- sv         = [7, T.length t] ++ map encodeChar (T.unpack t)
 --    | StaticBin bs <- sv           = [8, BS.length bs] ++ map fromIntegral (BS.unpack bs)
+    | StaticUnboxed (StaticUnboxedString bs) <- sv =
+      [7, BS.length bs] ++ map fromIntegral (BS.unpack bs)
+    | StaticUnboxed (StaticUnboxedStringOffset bs) <- sv =
+      [7, BS.length bs] ++ map fromIntegral (BS.unpack bs)
     | StaticList [] Nothing <- sv =
       [8]
     | StaticList args t <- sv =

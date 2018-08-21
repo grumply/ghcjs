@@ -212,7 +212,8 @@ packStrings settings dflags cstate code =
 
       rewriteVals :: JVal -> JVal
       rewriteVals (JVar (TxtI t))
-        | Just v <- replaceSymbol t = v
+        | gsStringCompact settings
+        , Just v <- replaceSymbol t = v
       rewriteVals (JList es) = JList (map rewriteValsE es)
       rewriteVals (JHash m) = JHash (fmap rewriteValsE m)
       rewriteVals (JFunc args body) = JFunc args (body & valsS %~ rewriteVals)
@@ -251,10 +252,7 @@ packStrings settings dflags cstate code =
       rewriteBlock (stat, ci, si)
         = (rewriteStat stat, ci, mapMaybe rewriteStatic si)
 
-    in if gsStringCompact settings then 
-        (cstate0, initStatic : map rewriteBlock code)
-       else
-        (cstate, code)
+    in (cstate0, initStatic : map rewriteBlock code)
 
 renameInternals :: HasDebugCallStack
                 => GhcjsSettings

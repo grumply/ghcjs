@@ -89,7 +89,7 @@ getGhcjsSettings args =
                  , "-no-rts"
                  , "-no-stats"
                  , "-dedupe"
-                 , "-string-compact"
+                 , "-no-string-compact"
                  ]
     ghcjsOpts = [ "-strip-program"
                 , "-log-commandline"
@@ -139,7 +139,7 @@ optParser = GhcjsSettings
             <*> optStr ( long "js-lib-outputdir" )
             <*> (maybe [] (:[]) <$> optStr ( long "js-lib-src" )) -- fixme!
             <*> switch ( long "dedupe" )
-            <*> switch ( long "string-compact" )
+            <*> switch ( long "no-string-compact" )
 
 optStr :: Mod OptionFields String -> Parser (Maybe String)
 optStr = optional . option str

@@ -253,7 +253,7 @@ packStrings settings dflags cstate code =
 
     in (cstate0, 
         (if gsNoStringCompact settings then code 
-         else (initStatic : map rewriteBlock code))
+         else (initStatic : map rewriteBlock code)))
 
 renameInternals :: HasDebugCallStack
                 => GhcjsSettings
